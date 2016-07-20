@@ -17,8 +17,8 @@
                     .then(initDbVar)
                     .then(createOrGetDb)
                     .then(replicate)
-                    .catch(errorHandler)
-                    .finally(listen);
+                    .then(listen)
+                    .catch(errorHandler);                    
         }
 
         function getCouchbaseUrl() {
@@ -53,13 +53,13 @@
               .catch(function(error) {
                   console.log(error);
                   return db.createDatabase()
-                           .then(createTodoDocument)
+                           .then(createFateViews)
                            .catch(errorHandler);
               });
         }
 
-        function createTodoDocument(result) {            
-            var todoViews = {
+        function createFateViews(result) {            
+            var fateViews = {
                 aspects: {
                     map: function(doc) {
                         if(doc.type == "aspect" && doc.description) {
@@ -68,7 +68,7 @@
                     }.toString()
                 }
             };            
-            return db.createDesignDocument("_design/aspects", todoViews)
+            return db.createDesignDocument("_design/aspects", fateViews)
                      .catch(errorHandler);
         }
 

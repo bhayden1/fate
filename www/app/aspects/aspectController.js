@@ -25,15 +25,13 @@
             vm.description = '';
             db.createDocument(aspect)
               .catch(function(err) { console.log(err);});
-        }
-        init();
+        }        
 
         function init() {
             couchbaseService
                 .init()
                 .then(function(result) {
-                    db.queryView('_design/aspects', 'aspects').then(function(results) {
-                        console.log(results);
+                    db.queryView('_design/aspects', 'aspects').then(function(results) {                        
                       vm.aspects = results.rows.map(function(row) {
                           var aspect = Aspect(row.value.description, row.value.appliesTo);
                           aspect.id = row.id;

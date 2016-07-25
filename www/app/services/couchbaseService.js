@@ -16,9 +16,9 @@
             return getCouchbaseUrl()
                     .then(initDbVar)
                     .then(createOrGetDb)
-                    .then(replicate)
-                    .then(listen)
-                    .catch(errorHandler);                    
+                    .then(replicateToCloud)
+                    .then(replicateFromCloud)
+                    .then(listen);                                  
         }
 
         function getCouchbaseUrl() {
@@ -72,20 +72,15 @@
                      .catch(errorHandler);
         }
 
-        function replicate(result) {
-            return db.replicate('aspects', 'http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', true)
-                     .then(function(result) {
-                        console.log(result);
-                     })
-                     .then(function() {
-                         return db.replicate('http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', 'aspects', true)
-                                  .then(console.log);
-                     });
-
+        function replicateToCloud(result) {
+            return db.replicate('aspects', 'http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', true);
         }
 
-        function listen() {
-            console.log('listening');
+        function replicateFromCloud(result) {
+            return db.replicate('http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', 'aspects', true);                                  
+        }
+
+        function listen() {            
             return db.listen();
         }
 

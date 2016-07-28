@@ -6,19 +6,27 @@
 
     CouchbaseService.$inject = ['$couchbase', '$q'];
     function CouchbaseService($couchbase, $q) {        
+        var db;
         var service = {
-            init: init                       
+            init: init,
+            get: getDb                                
         };
+
         
-        return service;
-        
+        return service;       
+
         function init() {
             return getCouchbaseUrl()
                     .then(initDbVar)
                     .then(createOrGetDb)
                     .then(replicateToCloud)
-                    .then(replicateFromCloud)
+                    .then(replicateFromCloud)                    
+                    .then(getDb)
                     .then(listen);                                  
+        }
+
+        function getDb() {
+            return $q.when(db);
         }
 
         function getCouchbaseUrl() {
@@ -41,7 +49,8 @@
                 console.log('no url');
                 return;
             }
-            return db = new $couchbase(url, 'aspects');
+            db = new $couchbase(url, 'aspects');
+            return db;
         }
 
         function createOrGetDb() {
@@ -53,23 +62,30 @@
               .catch(function(error) {
                   console.log(error);
                   return db.createDatabase()
-                           .then(createFateViews)
-                           .catch(errorHandler);
+                           .then(createFateViews);                           
               });
         }
 
         function createFateViews(result) {            
             var fateViews = {
-                aspects: {
+                game: {
                     map: function(doc) {
-                        if(doc.type == "aspect" && doc.description) {
-                            emit(doc._id, {description: doc.description, rev: doc._rev, appliesTo: doc.appliesTo})
+                        if(doc.type == "game" && doc.name) {                           
+        
+                            emit(doc._id, {
+                                name: doc.name, 
+                                rev: doc._rev, 
+                                passphrase: doc.passphrase, 
+                                aspects: doc.aspects, 
+                                characters: doc.characters,
+                                channels: doc.channels,
+                                owner: doc.owner
+                            })
                         }
                     }.toString()
                 }
             };            
-            return db.createDesignDocument("_design/aspects", fateViews)
-                     .catch(errorHandler);
+            return db.createDesignDocument("_design/games", fateViews);                     
         }
 
         function replicateToCloud(result) {

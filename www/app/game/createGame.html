@@ -1,0 +1,18 @@
+<ion-view title="Create Game" id="page2" >
+    <ion-content padding="true" class="has-header">
+        <form id="createGame-form1" class="list ">
+            <ion-list id="createGame-list1" >                
+                <label class="item item-input">
+                    <span class="input-label">Game Name</span>
+                    <input type="text" placeholder="" ng-model="vm.game">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Pass phrase</span>
+                    <input type="text" placeholder="Optional" ng-model="vm.passphrase">
+                </label>
+            </ion-list>
+            <div class="spacer" style="height: 40px;"></div>
+            <a ng-click="vm.createGame()" class="button button-positive button-block button-outline">Create</a>
+        </form>
+    </ion-content>
+</ion-view>

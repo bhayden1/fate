@@ -1,9 +1,15 @@
-var db;
+var resolvers = {
+  db: function(couchbaseService) {
+        return couchbaseService.get().then(function(db) {
+          return db;
+        })
+      }
+}
+
 angular.module('fateControllers', []);
 angular.module('fateServices', []);
 
 angular.module('fate', ['ionic', 'fateControllers', 'fateServices', 'ngCouchbaseLite','ngStorage'])
-.value('db', {})
 .config(function($stateProvider, $urlRouterProvider) {
   // $stateProvider.state('aspects', {
   //   url: '/aspects',
@@ -13,18 +19,26 @@ angular.module('fate', ['ionic', 'fateControllers', 'fateServices', 'ngCouchbase
 
   $stateProvider.state('game', {
     url: '/aspects/:game/:dm',
-    templateUrl: 'templates/game.html',
-    controller: 'gameCtrl'
-  })
-  .state('game2', {
-    url: '/aspects/:game',
-    templateUrl: 'templates/game2.html',
-    controller: 'game2Ctrl'
+    templateUrl: 'app/game/game.html',
+    controller: 'gameController as vm',
+    resolve: {
+      db: resolvers.db,
+      isDm : function($stateParams) {
+        console.log($stateParams);
+        return $stateParams.dm;
+      },
+      gameId: function($stateParams) {
+        return $stateParams.game;
+      }
+    }
   })
   .state('createGame', {
     url: '/create',
     templateUrl: 'app/game/createGame.html',
-    controller: 'createGameController as vm'
+    controller: 'createGameController as vm',
+    resolve: {
+      db: resolvers.db
+    }
   })
   .state('joinGame', {
     url: '/join',

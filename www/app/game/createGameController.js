@@ -9,14 +9,18 @@
     function createGameController($state, $localStorage, db) {
         var vm = this;
         vm.createGame = createGame;   
-        vm.user = $localStorage.email;     
-        console.log(db);
+        vm.user = $localStorage.email;  
+        vm.passphrase = '';   
+        
         function createGame() {
-            var game = Game(vm.name, vm.user, vm.passphrase);            
-            db.createDocument(game).then(function(game) {
-                $state.go('game', {dm: true, game: game.id});
+            var game = Game(vm.name, vm.user, vm.passphrase);
+            console.log(game)            
+            db.createDocument(game).then(function(results) {
+                console.log(results);
+                $state.go('game', {dm:true, game: results.id})
             });            
         }
+        window._t = db;        
     }
 
     function Game(name, owner, passphrase) {
@@ -30,4 +34,5 @@
             type: 'game'
         }
     }
+    
 })();

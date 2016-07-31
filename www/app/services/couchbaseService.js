@@ -19,14 +19,15 @@
             return getCouchbaseUrl()
                     .then(initDbVar)
                     .then(createOrGetDb)
-                    .then(replicateToCloud)
-                    .then(replicateFromCloud)                    
+                    //.then(replicateToCloud)
+                    //.then(replicateFromCloud)
+                    .then(listen)
                     .then(getDb)
-                    .then(listen);                                  
+                    .catch(errorHandler);                                  
         }
 
-        function getDb() {
-            return $q.when(db);
+        function getDb() {            
+            return (db) ? $q.when(db) : init();
         }
 
         function getCouchbaseUrl() {
@@ -49,7 +50,7 @@
                 console.log('no url');
                 return;
             }
-            db = new $couchbase(url, 'aspects');
+            db = new $couchbase(url, 'aspects');            
             return db;
         }
 
@@ -66,20 +67,18 @@
               });
         }
 
-        function createFateViews(result) {            
+        function createFateViews(result) {
             var fateViews = {
-                game: {
-                    map: function(doc) {
-                        if(doc.type == "game" && doc.name) {                           
-        
+                games: {
+                    map: function(doc) {         
+                        console.log('games map ->' + doc);             
+                        if(doc.type == "game" && doc.name) {
                             emit(doc._id, {
                                 name: doc.name, 
                                 rev: doc._rev, 
                                 passphrase: doc.passphrase, 
                                 aspects: doc.aspects, 
-                                characters: doc.characters,
-                                channels: doc.channels,
-                                owner: doc.owner
+                                characters: doc.characters
                             })
                         }
                     }.toString()
@@ -88,7 +87,7 @@
             return db.createDesignDocument("_design/games", fateViews);                     
         }
 
-        function replicateToCloud(result) {
+        function replicateToCloud(result) {            
             return db.replicate('aspects', 'http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', true);
         }
 
@@ -97,7 +96,8 @@
         }
 
         function listen() {            
-            return db.listen();
+            db.listen();
+            return db;
         }
 
         function errorHandler(error) {

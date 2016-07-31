@@ -1,27 +1,27 @@
-<ion-view title="vm.name" id="page1" >
+<ion-view>
+    <ion-nav-title>
+        {{vm.title}}
+    </ion-nav-title>
     <ion-content padding="true" class="has-header">
         <form id="game-form2" class="list" ng-if="vm.isDm">
-            <label class="item item-input" id="game-textarea1">
-                <span class="input-label">Aspect</span><textarea placeholder="">This is an aspect I'm going to create</textarea>
+            <label class="item item-input">
+                <span class="input-label">Aspect</span><textarea placeholder="Add you an aspect!" ng-model="vm.description"></textarea>
             </label>
-            <label class="item item-input" id="game-textarea2">
-                <span class="input-label">Apply To</span><textarea placeholder="">Environment</textarea>
+            <label class="item item-input">
+                <span class="input-label">Apply To</span>
+                <input type="text" 
+                placeholder="Who should this aspect apply to?" ng-model="vm.appliesTo"></textarea>
             </label>
-            <button id="game-button3" class="button button-positive button-block button-outline">Add</button>
+            <button class="button button-positive button-block button-outline" ng-click="vm.add()">Add</button>
         </form>
 
         <ion-list>
-            <ion-item class="item-divider" id="game-list-item-divider1">Environment</ion-item>
-            <ion-item class="item-icon-right" id="game-list-item1">Dark and creepy
-                <i class="icon ion-close icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-divider" id="game-list-item-divider2">Bob the Wizard</ion-item>
-            <ion-item class="item-icon-right" id="game-list-item2">Brave but not stupid
-                <i class="icon ion-close icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-icon-right" id="game-list-item3">Took an arrow to the knee
-                <i class="icon ion-close icon-accessory"></i>
-            </ion-item>
+            <div ng-repeat="(key, value) in vm.groupedAspects">
+                <ion-item class="item-divider">{{key}}</ion-item>
+                <ion-item class="item-icon-right" ng-repeat="aspect in value">{{aspect.description}}
+                    <i class="icon ion-close icon-accessory"></i>
+                </ion-item>
+            </div>            
         </ion-list>
     </ion-content>
 </ion-view>

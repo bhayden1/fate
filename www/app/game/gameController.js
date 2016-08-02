@@ -51,11 +51,13 @@
 
         function listenToChange() {
             $rootScope.$on("couchbase:change", function(event, args) {
+                console.log('changes!')
                 var matchingResults = args.results.filter(function(result) {
                     return result.id === gameId;
                 });
 
                 if(matchingResults.length > 0) {
+                    console.log('found match!');
                     getGame();
                 }
             });

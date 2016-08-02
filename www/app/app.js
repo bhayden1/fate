@@ -24,7 +24,6 @@ angular.module('fate', ['ionic', 'fateControllers', 'fateServices', 'ngCouchbase
     resolve: {
       db: resolvers.db,
       isDm : function($stateParams) {
-        console.log($stateParams);
         return $stateParams.dm;
       },
       gameId: function($stateParams) {
@@ -49,6 +48,17 @@ angular.module('fate', ['ionic', 'fateControllers', 'fateServices', 'ngCouchbase
     url: '/welcome',
     templateUrl: 'app/welcome/welcome.html',
     controller: 'welcomeController as vm'
+  })
+  .state('myGames', {
+    url: '/myGames',
+    templateUrl: 'app/game/myGames.html',
+    controller: 'myGamesController as vm', 
+    resolve: {
+      db: resolvers.db,
+      email: function($localStorage) {
+        return $localStorage.email;
+      }
+    }
   })
 
   $urlRouterProvider.otherwise('/welcome');

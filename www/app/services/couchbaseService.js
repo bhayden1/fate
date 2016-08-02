@@ -4,8 +4,8 @@
     angular.module('fateServices')
         .factory('couchbaseService', CouchbaseService);
 
-    CouchbaseService.$inject = ['$couchbase', '$q'];
-    function CouchbaseService($couchbase, $q) {        
+    CouchbaseService.$inject = ['$couchbase', '$q', '$localStorage'];
+    function CouchbaseService($couchbase, $q, $localStorage) {        
         var db;
         var service = {
             init: init,
@@ -19,8 +19,8 @@
             return getCouchbaseUrl()
                     .then(initDbVar)
                     .then(createOrGetDb)
-                    //.then(replicateToCloud)
-                    //.then(replicateFromCloud)
+                    .then(replicateToCloud)
+                    .then(replicateFromCloud)
                     .then(listen)
                     .then(getDb)
                     .catch(errorHandler);                                  
@@ -70,9 +70,7 @@
         function createFateViews(result) {
             var fateViews = {
                 games: {
-                    map: function(doc) {         
-                        console.log('games map ->' + doc);             
-                        if(doc.type == "game" && doc.name) {
+                    map: function(doc) {                  if(doc.type == "game" && doc.name) {
                             emit(doc._id, {
                                 name: doc.name, 
                                 rev: doc._rev, 
@@ -88,11 +86,11 @@
         }
 
         function replicateToCloud(result) {            
-            return db.replicate('aspects', 'http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', true);
+            return db.replicate('aspects', 'http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', true, $localStorage.email);
         }
 
         function replicateFromCloud(result) {
-            return db.replicate('http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', 'aspects', true);                                  
+            return db.replicate('http://doctest-5u5ybzm3.cloudapp.net:4984/aspects', 'aspects', true, $localStorage.email);                                  
         }
 
         function listen() {            

@@ -1,5 +1,5 @@
 <ion-view title="Fate" hide-nav-bar="true">
-    <ion-content padding="true" class="manual-ios-statusbar-padding" has-header="false">
+    <ion-content padding="true" class="has-header" has-header="false">
         <div>
             <img src="img/w66JJmPRXiQvNOaW45OQ_fatecore300.jpg" width="100%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
         </div>
@@ -14,6 +14,9 @@
             </ion-list>
             <button ui-sref="createGame" class=" button button-positive  button-block" ng-disabled="vm.form.email.$invalid">Create Game</button>
             <button ui-sref="joinGame" class=" button button-positive  button-block button-outline" ng-disabled="vm.form.email.$invalid">Join Game</button>
+            <button ui-sref="myGames" ng-show="vm.$storage.email" class="button button-positive button-block button-outline">
+                My Games
+            </button>
         </form>
     </ion-content>
 </ion-view>
